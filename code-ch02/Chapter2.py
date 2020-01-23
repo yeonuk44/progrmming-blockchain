@@ -132,17 +132,26 @@ print(__add__(p1,p2))
 # 
 # For the curve \\(y^{2}\\)=\\(x^{3}\\)+5x+7, what is (2,5) + (-1,-1)?
 
-# In[ ]:
+# In[1]:
 
 
 # Exercise 4
-
+# Deriving the Point Addition Formula
 from ecc import Point
 
 a = 5
 b = 7
+# y^2 = x^3 + 5x + 7
 x1, y1 = 2, 5
 x2, y2 = -1, -1
+s = (y2 - y1) / (x2 - x1)
+
+# Vuera's formula
+x3 = s ** 2 - x1 -x2
+y3 = s * (x1 - x3) - y1
+print(x3 , y3)
+
+# result : 3.0 -7.0
 
 # (x1,y1) + (x2,y2)
 
@@ -153,11 +162,26 @@ x2, y2 = -1, -1
 # 
 # #### Make [this test](/edit/code-ch02/ecc.py) pass: `ecc.py:PointTest:test_add1`
 
-# In[ ]:
+# In[2]:
 
 
 # Exercise 5
 
+# if x1 ≠ x2
+
+def __add__(self, other):
+    if self.a != other.a or self.b != other.b:
+        raise TypeError
+    if self.x is None:
+        return other
+    if other.x is None:
+        return self
+    if self.x != other.x:
+        s = (other.y - self.y) / (other.x - self.x)
+        x = s**2 - self.x - other.x
+        y = s * (self.x - x) - self.y
+        return  self.__class__(None, None, self.a, self.b)
+    
 reload(ecc)
 run(ecc.PointTest("test_add1"))
 
@@ -166,16 +190,26 @@ run(ecc.PointTest("test_add1"))
 # 
 # For the curve \\(y^{2}\\)=\\(x^{3}\\)+5x+7, what is (-1,-1) + (-1,-1)?
 
-# In[ ]:
+# In[3]:
 
 
 # Exercise 6
 
 from ecc import Point
 
+# if the curve y^2 = x^3 + 5x +7
+# if P1 = P2
+# Deriving the Point Addition Formula
+
 a = 5
 b = 7
 x1, y1 = -1, -1
+
+s = (3 * x1**2 + a) / (2 * y1)
+x3 = s**2 - 2 * x1
+y3 = s * (x1 - x3) - y1
+print(x3,y3)
+
 # (-1,-1) + (-1,-1)
 
 
@@ -185,11 +219,31 @@ x1, y1 = -1, -1
 # 
 # #### Make [this test](/edit/code-ch02/ecc.py) pass: `ecc.py:PointTest:test_add2`
 
-# In[ ]:
+# In[4]:
 
 
 # Exercise 7
+# if x1 = x2
+# Deriving the Point Addition Formula
 
+def __add__(self, other):
+        if self.a != other.a or self.b != other.b:
+            raise TypeError
+        if self.x is None:
+            return other
+        if other.x is None:
+            return self
+        if self == other:
+            s = (3 * self.x**2 + self.a) / (2 * self.y)
+            x = s**2 - 2 * self.x
+            y = s * (self.x - x) - self.y
+            return self.__class__(x, y, self.a, self.b)
 reload(ecc)
 run(ecc.PointTest("test_add2"))
+
+
+# In[ ]:
+
+
+
 
